@@ -19,8 +19,19 @@ public class ShellSort extends Base {
             h = h / 3;
         }
 
+    }
 
 
+    public static int[] sortByMyself(int[] a) {
+
+
+        for (int gap = a.length / 2; gap > 0; gap /= 2) {
+            for (int i = 0; i <= ; i++) {
+
+            }
+        }
+
+        return a;
     }
 
 }

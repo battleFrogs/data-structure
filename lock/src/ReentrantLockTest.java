@@ -1,4 +1,5 @@
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -8,7 +9,8 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class ReentrantLockTest {
 
-    public static ReentrantLock reentrantLock = new ReentrantLock();
+    private static ReentrantLock reentrantLock = new ReentrantLock();
+
 
     private static void task1() {
         // 如果已经被 lock，则立即返回 false 不会等待，达到忽略操作的效果
@@ -76,8 +78,47 @@ public class ReentrantLockTest {
     }
 
 
-    public static void task5() {
-        Condition condition = reentrantLock.newCondition();
+    private static Condition produceCondition = reentrantLock.newCondition();
+    private static Condition consumeCondition = reentrantLock.newCondition();
+    private static final AtomicInteger atomicInteger = new AtomicInteger(0);
+
+
+    // 生产
+    public static void task5And1()  {
+        reentrantLock.lock();
+        try {
+            while (atomicInteger.get() % 2 != 0) {
+                System.out.println("数目可以消费");
+                produceCondition.await();
+            }
+            int i = atomicInteger.incrementAndGet();
+            System.out.println("1我生产" + i);
+            consumeCondition.signal();
+        } catch (Exception e){
+            System.out.println("异常");
+        } finally {
+            reentrantLock.unlock();
+        }
+
+    }
+
+    // 消费
+    public static void task5And2() {
+        reentrantLock.lock();
+        try {
+            while (atomicInteger.get() % 2 == 0) {
+                System.out.println("数目可以生产");
+                consumeCondition.await();
+            }
+            int i = atomicInteger.decrementAndGet();
+            System.out.println("2我消费了" + i);
+            produceCondition.signal();
+        } catch (Exception e){
+            System.out.println("异常");
+        } finally {
+            reentrantLock.unlock();
+        }
+
 
     }
 
@@ -86,9 +127,11 @@ public class ReentrantLockTest {
 
     public static void main(String[] args) {
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10000; i++) {
             // 构建 匿名 构建线程
-            new Thread(ReentrantLockTest::task4).start();
+            new Thread(ReentrantLockTest::task5And1).start();
+
+            new Thread(ReentrantLockTest::task5And2).start();
         }
     }
 
