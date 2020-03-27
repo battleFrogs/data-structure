@@ -7,7 +7,7 @@ package impl;
  * 【2,1】 , 【1,0】  第二次 从二号位索引开始与前头比较 小就交换位置，然后拿1号位索引去和0号位索引比较，如大就退出
  * 【3,2】 , 【2,1】 , 【1,0】
  */
-public class InsertSort extends Base{
+public class InsertSort extends Base {
 
     public static void sort(Comparable[] a) {
         for (int i = 1; i < a.length; i++) {
@@ -31,15 +31,13 @@ public class InsertSort extends Base{
     }
 
     public static int[] sortMySelf(int[] a) {
-        for (int i = 1; i < a.length; i++) {
-            for (int j = i ; j > 0; j--) {
-                if (a[j] < a[j - 1]) {
-                    int temp = a[j];
-                    a[j] = a[j-1];
-                    a[j-1] = temp;
-                }else{
-                    break;
-                }
+        int len = a.length;
+        // 将元素arr[i]插入到有序列表中arr[0...j]
+        for (int i = 1; i < len; i++) {
+            for (int j = i - 1; j >= 0 && a[j] > a[j + 1]; j--) {
+                int temp = a[j];
+                a[j] = a[j + 1];
+                a[j + 1] = temp;
             }
         }
         return a;
