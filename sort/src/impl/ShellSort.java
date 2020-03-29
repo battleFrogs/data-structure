@@ -27,12 +27,11 @@ public class ShellSort extends Base {
 
         for (int gap = a.length / 2; gap >= 1; gap = gap / 2) {
             for (int i = gap; i < a.length; i++) {
-                for (int j = i - gap; j >= 0 && a[j] > a[j + gap]; j = j - gap) {
-                    int temp = a[j];
-                    a[j] = a[j + gap];
-                    a[j + gap] = temp;
+                if (a[i] < a[i - gap]) {
+                    int temp = a[i];
+                    a[i] = a[i - gap];
+                    a[i - gap] = temp;
                 }
-
             }
         }
 

@@ -23,7 +23,7 @@ public class InsertSort extends Base {
 //        show(a);
 
         int[] a = {12, 3, 24534, 435345, 34634534, 444, 443};
-        a = sortMySelf(a);
+        sortMySelf(a);
         for (int i = 0; i < a.length; i++) {
             int i1 = a[i];
             System.out.println(i1);
